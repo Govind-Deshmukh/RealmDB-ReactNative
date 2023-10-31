@@ -24,24 +24,28 @@ export default function CRUD() {
   };
 
   const updateData = id => {
-    const itemToUpdate = realm.objectForPrimaryKey('Data', id);
+    if (id) {
+      const itemToUpdate = realm.objectForPrimaryKey('Data', id);
 
-    if (itemToUpdate) {
-      realm.write(() => {
-        itemToUpdate.number = Math.floor(Math.random() * 100) + 1;
-      });
+      if (itemToUpdate) {
+        realm.write(() => {
+          itemToUpdate.number = Math.floor(Math.random() * 100) + 1;
+        });
+      }
+      readEntries();
     }
-    readEntries();
   };
 
   const deleteData = id => {
-    const itemToDelete = realm.objectForPrimaryKey('Data', id);
-    if (itemToDelete) {
-      realm.write(() => {
-        realm.delete(itemToDelete);
-      });
+    if (id) {
+      const itemToDelete = realm.objectForPrimaryKey('Data', id);
+      if (itemToDelete) {
+        realm.write(() => {
+          realm.delete(itemToDelete);
+        });
+        readEntries();
+      }
     }
-    readEntries();
   };
 
   useEffect(() => {
@@ -49,8 +53,9 @@ export default function CRUD() {
   }, []);
 
   return (
-    <View>
-      <Button title="Generate Enrty" onPress={generateEntry} />
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}></View>
+      <Button title="Generate Entry" onPress={generateEntry} />
       <FlatList
         data={data}
         keyExtractor={item => item._id.toString()}
@@ -65,10 +70,11 @@ export default function CRUD() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  buttoncontainer: {
-    color: 'Blue',
-    backgroundColor: 'red',
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     margin: 10,
   },
   container: {
